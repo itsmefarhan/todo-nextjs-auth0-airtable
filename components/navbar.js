@@ -1,6 +1,6 @@
 import React from "react";
 
-const Navbar = () => {
+const Navbar = ({ user }) => {
   return (
     <nav className="navbar navbar-expand-sm navbar-light bg-light">
       <div className="container">
@@ -9,16 +9,19 @@ const Navbar = () => {
         </a>
 
         <ul className="navbar-nav ml-auto">
-          <li className="nav-item">
-            <a className="nav-link" href="/">
-              Login
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="/">
-              Logout
-            </a>
-          </li>
+          {user ? (
+            <li className="nav-item">
+              <a className="nav-link" href="/api/logout">
+                Logout
+              </a>
+            </li>
+          ) : (
+            <li className="nav-item">
+              <a className="nav-link" href="/api/login">
+                Login
+              </a>
+            </li>
+          )}
         </ul>
       </div>
     </nav>

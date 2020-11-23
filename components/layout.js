@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Navbar from "./navbar";
 
 const Layout = ({ children }) => {
   return (
@@ -12,8 +11,7 @@ const Layout = ({ children }) => {
           crossorigin="anonymous"
         />
       </Head>
-      <Navbar />
-      <div className="container">{children}</div>
+      {children}
     </div>
   );
 };

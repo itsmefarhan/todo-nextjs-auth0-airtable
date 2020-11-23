@@ -1,4 +1,4 @@
-const { table, formatRecords } = require("../../formatdb");
+const { table, formatRecords } = require("../../utils/formatdb");
 
 export default async (req, res) => {
   try {
