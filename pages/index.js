@@ -1,7 +1,23 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { useContext, useEffect } from "react";
+import Head from "next/head";
+import styles from "../styles/Home.module.css";
+import { TodoContext } from "../context/todoContext";
 
-export default function Home() {
+export default function Home({ data }) {
+  const { todos, setTodos, updateTodo, deleteTodo } = useContext(TodoContext);
+
+  useEffect(() => {
+    setTodos(data);
+  }, []);
+
+  const toggleCompleted = (todo) => {
+    const updatedFields = {
+      ...todo.fields,
+      completed: !todo.fields.completed,
+    };
+    const updatedTodo = { id: todo.id, fields: updatedFields };
+    updateTodo(updatedTodo);
+  };
 
   return (
     <div className={styles.container}>
@@ -11,56 +27,50 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
+        <h4 className={styles.title}>
           Todo App With Nextjs, Auth0 and Airtable
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+        </h4>
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+      <ul
+        className="mt-5 list-group"
+        style={{ maxWidth: "500px", margin: "auto" }}
+      >
+        {todos &&
+          todos.map((todo) => (
+            <li key={todo.id} className="list-group-item shadow mt-3">
+              <input
+                type="checkbox"
+                name="completed"
+                checked={todo.fields.completed}
+                onChange={() => toggleCompleted(todo)}
+              />
+              <span className="ml-3 lead">
+                {todo.fields.completed ? (
+                  <del>{todo.fields.title}</del>
+                ) : (
+                  todo.fields.title
+                )}
+              </span>
+              <button
+                className="btn-danger btn-sm float-right"
+                onClick={() => deleteTodo(todo.id)}
+              >
+                x
+              </button>
+            </li>
+          ))}
+      </ul>
     </div>
-  )
+  );
+}
+
+export async function getServerSideProps() {
+  const res = await fetch("http://localhost:3000/api/getTodos");
+  const data = await res.json();
+
+  return {
+    props: {
+      data,
+    },
+  };
 }

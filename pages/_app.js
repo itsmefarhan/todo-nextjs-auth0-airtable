@@ -1,11 +1,14 @@
 import "../styles/globals.css";
 import Layout from "../components/layout";
+import TodoProvider from "../context/todoContext";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <TodoProvider>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </TodoProvider>
   );
 }
 
